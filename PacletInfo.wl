@@ -8,7 +8,9 @@ PacletObject[
                 {
                     "Kernel",
                     "Root" -> "Kernel",
-                    "Context" -> "Logger`"
+                    "Context" -> {
+                        "Logger`"
+                    }    
                 },
                 {
                     "Documentation",

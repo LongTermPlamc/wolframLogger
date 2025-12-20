@@ -3,6 +3,7 @@ BeginPackage["Logger`"]
 (* Declare your package's public symbols here. *)
 
 Logger
+LoggerV2
 
 Begin["`Private`"]
 
@@ -73,6 +74,23 @@ Logger[basePath_String : "logs/", maxSize_ : 1024*1024, mode_:"Single"] :=
    "MaxSize" -> maxSize,
    "Mode"-> mode
    |>
+]
+
+(* LoggerV2 should be a closure i.e. a function that remembers its context. *)
+Options[LoggerV2] = {"LogDir"->Directory[], "StdOut"->False}
+LoggerV2[opts:OptionsPattern[]] := Module[
+    {dir = OptionValue["LogDir"], stream, file,wrapText,
+    printStd=OptionValue["StdOut"]
+    },
+    wrapText = Function[i,StringJoin["[INFO]",DateString[],i,"\n"]];
+    file = FileNameJoin[{dir,"app.log"}];
+    stream = OpenAppend[file];
+    If[FailureQ[stream], Return[$Failed]];
+    Function[
+        i,
+        WriteString[stream, wrapText[i]];
+        If[printStd,WriteString[$Output,wrapText[i]]];
+    ]
 ]
 
 
